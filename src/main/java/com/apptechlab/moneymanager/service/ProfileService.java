@@ -4,6 +4,7 @@ import com.apptechlab.moneymanager.dto.AuthDto;
 import com.apptechlab.moneymanager.dto.ProfileDto;
 import com.apptechlab.moneymanager.entity.ProfileEntity;
 import com.apptechlab.moneymanager.repository.ProfileRepository;
+import com.apptechlab.moneymanager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -25,6 +26,7 @@ public class ProfileService {
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
+    private final JwtUtil jwtUtil;
 
     public ProfileDto registerProfile(ProfileDto profileDto){
         ProfileEntity newProfile = toEntity(profileDto);
@@ -72,9 +74,11 @@ public class ProfileService {
     public Map<String, Object> authenticateAndGenerateToken(AuthDto authDto){
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDto.getEmail(), authDto.getPassword()));
-            // generate the jwt
-            return Map.of("token","jwt token",
-                    "user",getPublicProfile(authDto.getEmail()));
+            String token = jwtUtil.generateToken(authDto.getEmail());
+            return Map.of(
+                    "token",token,
+                    "user",getPublicProfile(authDto.getEmail()
+                    ));
         }catch (Exception e){
             throw new RuntimeException("Invalid email or password");
         }
