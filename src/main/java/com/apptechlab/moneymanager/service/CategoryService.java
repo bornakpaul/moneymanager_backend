@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
 import java.time.LocalDateTime;
+import java.util.List;
 
 @Service
 @RequiredArgsConstructor
@@ -21,7 +22,7 @@ public class CategoryService {
     public CategoryDto saveCategory(CategoryDto categoryDto){
         ProfileEntity profile = profileService.getCurrentProfile();
         if(categoryRepository.existsByNameAndProfileId(categoryDto.getName(), profile.getId())){
-            throw new ResponseStatusException(HttpStatus.CONFLICT, "Category with this name already exists");
+            throw new RuntimeException("Category with this name already exists");
         }
 
         CategoryEntity newCategory = toEntity(categoryDto,profile);
@@ -29,6 +30,29 @@ public class CategoryService {
         return toDto(newCategory);
     }
 
+    public List<CategoryDto> getCategoriesForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<CategoryEntity> categories = categoryRepository.findByProfileId(profile.getId());
+        return categories.stream().map(this::toDto).toList();
+    }
+
+    public List<CategoryDto> getCategoriesByTypeForCurrentUser(String type){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<CategoryEntity> categories = categoryRepository.findByTypeAndProfileId(type,profile.getId());
+        return categories.stream().map(this::toDto).toList();
+    }
+
+    public CategoryDto updateCategory(Long categoryId, CategoryDto categoryDto){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        CategoryEntity existingCategory = categoryRepository.findByIdAndProfileId(categoryId,profile.getId()).orElseThrow(
+                ()-> new RuntimeException("Category not found or not accessible")
+        );
+        existingCategory.setName(categoryDto.getName());
+        existingCategory.setIcon(categoryDto.getIcon());
+        existingCategory.setType(categoryDto.getType());
+        existingCategory = categoryRepository.save(existingCategory);
+        return toDto(existingCategory);
+    }
 
     private CategoryEntity toEntity(CategoryDto categoryDto, ProfileEntity profile){
         return  CategoryEntity.builder()

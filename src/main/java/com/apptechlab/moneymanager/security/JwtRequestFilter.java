@@ -1,6 +1,7 @@
 package com.apptechlab.moneymanager.security;
 
 import com.apptechlab.moneymanager.util.JwtUtil;
+import io.jsonwebtoken.ExpiredJwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
 
 @Component
 @RequiredArgsConstructor
@@ -31,7 +33,23 @@ public class JwtRequestFilter extends OncePerRequestFilter {
           String jwt = null;
           if(authHeader != null && authHeader.startsWith("Bearer ")){
               jwt = authHeader.substring(7);
-              email = jwtUtil.extractUsername(jwt);
+              try {
+                  email = jwtUtil.extractUsername(jwt);
+              }catch (ExpiredJwtException e){
+                  response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                  response.setContentType("application/json");
+                  String msg = "{\"error\":\"Token expired. Refresh the token to proceed further.\"}";
+                  response.getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
+                  response.getOutputStream().flush();
+                  return;
+              } catch (Exception e) {
+                  response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                  response.setContentType("application/json");
+                  String msg = "{\"error\":\"Invalid authentication token.\"}";
+                  response.getOutputStream().write(msg.getBytes(StandardCharsets.UTF_8));
+                  response.getOutputStream().flush();
+                  return;
+              }
           }
           if(email != null && SecurityContextHolder.getContext().getAuthentication() == null){
              UserDetails userDetails = this.userDetailsService.loadUserByUsername(email);
