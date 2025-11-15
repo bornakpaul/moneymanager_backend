@@ -2,6 +2,7 @@ package com.apptechlab.moneymanager.controller;
 
 import com.apptechlab.moneymanager.dto.ExpenseDto;
 import com.apptechlab.moneymanager.service.ExpenseService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/expenses")
+@Tag(name = "Expense Controllers",description = "API's to add, fetch and delete expenses of individual users")
 public class ExpenseController {
 
     private final ExpenseService expenseService;

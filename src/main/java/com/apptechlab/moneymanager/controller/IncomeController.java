@@ -2,6 +2,7 @@ package com.apptechlab.moneymanager.controller;
 
 import com.apptechlab.moneymanager.dto.IncomeDto;
 import com.apptechlab.moneymanager.service.IncomeService;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +13,7 @@ import java.util.List;
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/incomes")
+@Tag(name = "Income Controllers",description = "API's to add, fetch and delete incomes of individual users")
 public class IncomeController {
 
     private final IncomeService incomeService;
