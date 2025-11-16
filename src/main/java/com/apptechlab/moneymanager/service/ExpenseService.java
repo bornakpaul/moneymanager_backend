@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
@@ -51,6 +52,18 @@ public class ExpenseService {
             throw new AuthorizationDeniedException("You are not authorised to delete this expense. You can only delete the expenses added by you");
         }
         expenseRepository.delete(entity);
+    }
+
+    public List<ExpenseDto> getLatest5ExpensesForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<ExpenseEntity> entities = expenseRepository.findTop5ByProfileIdOrderByDateDesc(profile.getId());
+        return entities.stream().map(this::toDto).toList();
+    }
+
+    public BigDecimal getTotalExpenseForCurrentUser(){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        BigDecimal total = expenseRepository.findTotalExpenseByProfileId(profile.getId());
+        return total != null ? total : BigDecimal.ZERO;
     }
 
     //helper methods
