@@ -7,6 +7,7 @@ import com.apptechlab.moneymanager.entity.ProfileEntity;
 import com.apptechlab.moneymanager.repository.CategoryRepository;
 import com.apptechlab.moneymanager.repository.ExpenseRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Sort;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
 
@@ -64,6 +65,12 @@ public class ExpenseService {
         ProfileEntity profile = profileService.getCurrentProfile();
         BigDecimal total = expenseRepository.findTotalExpenseByProfileId(profile.getId());
         return total != null ? total : BigDecimal.ZERO;
+    }
+
+    public List<ExpenseDto> filterExpenses(LocalDate startDate, LocalDate endDate, String keyword, Sort sort){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(),startDate,endDate,keyword,sort);
+        return list.stream().map(this::toDto).toList();
     }
 
     //helper methods
