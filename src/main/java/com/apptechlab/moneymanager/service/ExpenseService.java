@@ -10,6 +10,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -70,6 +71,11 @@ public class ExpenseService {
     public List<ExpenseDto> filterExpenses(LocalDate startDate, LocalDate endDate, String keyword, Sort sort){
         ProfileEntity profile = profileService.getCurrentProfile();
         List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(),startDate,endDate,keyword,sort);
+        return list.stream().map(this::toDto).toList();
+    }
+
+    public List<ExpenseDto> getExpensesForUserOnDate(Long profileId, LocalDate date){
+        List<ExpenseEntity> list = expenseRepository.findByProfileIdAndDate(profileId,date);
         return list.stream().map(this::toDto).toList();
     }
 
