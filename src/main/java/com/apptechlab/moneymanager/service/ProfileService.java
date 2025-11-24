@@ -6,6 +6,7 @@ import com.apptechlab.moneymanager.entity.ProfileEntity;
 import com.apptechlab.moneymanager.repository.ProfileRepository;
 import com.apptechlab.moneymanager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -21,6 +22,8 @@ import java.util.UUID;
 @Service
 @RequiredArgsConstructor
 public class ProfileService {
+    @Value("${app.activation.url}")
+    private String activationUrl;
 
     private final ProfileRepository profileRepository;
     private final EmailService emailService;
@@ -33,7 +36,7 @@ public class ProfileService {
         newProfile.setActivationToken(UUID.randomUUID().toString());
         newProfile = profileRepository.save(newProfile);
         // send activation email
-        String activationLink = "http://localhost:8080/api/v1.0/activate?token="+ newProfile.getActivationToken();
+        String activationLink =  activationUrl+"/api/v1.0/activate?token="+ newProfile.getActivationToken();
         String subject = "Activate your Money Manager account";
         String body = "Click on the following link to activate your account: " + activationLink;
         emailService.sendEmail(newProfile.getEmail(), subject,body);
