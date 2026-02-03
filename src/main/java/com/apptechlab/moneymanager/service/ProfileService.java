@@ -3,10 +3,12 @@ package com.apptechlab.moneymanager.service;
 import com.apptechlab.moneymanager.dto.AuthDto;
 import com.apptechlab.moneymanager.dto.ProfileDto;
 import com.apptechlab.moneymanager.entity.ProfileEntity;
+import com.apptechlab.moneymanager.event.ProfileActivatedEvent;
 import com.apptechlab.moneymanager.repository.ProfileRepository;
 import com.apptechlab.moneymanager.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.ApplicationEventPublisher;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -26,6 +28,7 @@ public class ProfileService {
     private String activationUrl;
 
     private final ProfileRepository profileRepository;
+    private final ApplicationEventPublisher eventPublisher;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
     private final AuthenticationManager authenticationManager;
@@ -48,6 +51,8 @@ public class ProfileService {
                 {
                     profile.setIsActive(true);
                     profileRepository.save(profile);
+
+                    eventPublisher.publishEvent(new ProfileActivatedEvent(this, profile));
                     return true;
                 }).orElse(false);
     }
