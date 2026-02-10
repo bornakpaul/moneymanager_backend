@@ -2,6 +2,7 @@ package com.apptechlab.moneymanager.controller;
 
 import com.apptechlab.moneymanager.dto.AuthDto;
 import com.apptechlab.moneymanager.dto.ProfileDto;
+import com.apptechlab.moneymanager.dto.UpdatePasswordDto;
 import com.apptechlab.moneymanager.service.ProfileService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Generated;
@@ -24,6 +25,20 @@ public class ProfileController {
         ProfileDto registeredProfile = profileService.registerProfile(profileDto);
 
         return ResponseEntity.status(HttpStatus.CREATED).body(registeredProfile);
+    }
+
+    @PostMapping("/updateProfile")
+    public ResponseEntity<ProfileDto> updateProfile(@RequestBody ProfileDto profileDto){
+        ProfileDto updateProfile = profileService.updateProfile(profileDto);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(updateProfile);
+    }
+
+    @PostMapping("/updatePassword")
+    public ResponseEntity<ProfileDto> updatePassword(@RequestBody UpdatePasswordDto updatePasswordDto){
+        ProfileDto updateProfile = profileService.updatePassword(updatePasswordDto.getId(), updatePasswordDto.getPassword());
+
+        return ResponseEntity.status(HttpStatus.CREATED).body(updateProfile);
     }
 
     @GetMapping("/activate")

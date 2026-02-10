@@ -6,9 +6,11 @@ import com.apptechlab.moneymanager.entity.ProfileEntity;
 import com.apptechlab.moneymanager.event.ProfileActivatedEvent;
 import com.apptechlab.moneymanager.repository.ProfileRepository;
 import com.apptechlab.moneymanager.util.JwtUtil;
+import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.ApplicationEventPublisher;
+import org.springframework.context.annotation.Profile;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -67,6 +69,44 @@ public class ProfileService {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
         String email = authentication.getName();
         return profileRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException("Profile not found with email: "+ email));
+    }
+
+    @Transactional
+    public ProfileDto updateProfile(ProfileDto profileData){
+       ProfileEntity currentUser = this.getCurrentProfile();
+       if(!Objects.equals(currentUser.getId(), profileData.getId())){
+           throw new RuntimeException("You don't have the access to update this profile");
+       }
+        ProfileEntity updatedProfile;
+       if(Objects.equals(currentUser.getEmail(), profileData.getEmail())){
+           currentUser.setFullName(profileData.getFullName());
+           currentUser.setProfileImageUrl(profileData.getProfileImageUrl());
+           updatedProfile = profileRepository.save(currentUser);
+       }else{
+           updatedProfile = toEntity(profileData);
+           updatedProfile.setPassword(currentUser.getPassword());
+           updatedProfile.setActivationToken(UUID.randomUUID().toString());
+           updatedProfile = profileRepository.save(updatedProfile);
+
+           // send activation email
+           String activationLink =  activationUrl+"/api/v1.0/activate?token="+ updatedProfile.getActivationToken();
+           String subject = "Activate your Money Manager account";
+           String body = "Click on the following link to activate your account: " + activationLink;
+           emailService.sendEmail(updatedProfile.getEmail(), subject,body);
+       }
+
+       return toDto(updatedProfile);
+    }
+
+    @Transactional
+    public ProfileDto updatePassword(Long profileId, String password){
+        ProfileEntity currentUser = this.getCurrentProfile();
+        if(!Objects.equals(currentUser.getId(), profileId)){
+            throw new RuntimeException("You don't have the access to update this profile");
+        }
+        currentUser.setPassword(passwordEncoder.encode(password));
+        ProfileEntity updatedProfile = profileRepository.save(currentUser);
+        return toDto(updatedProfile);
     }
 
     public ProfileDto getPublicProfile(String email){
