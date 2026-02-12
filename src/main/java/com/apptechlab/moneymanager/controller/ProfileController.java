@@ -63,4 +63,10 @@ public class ProfileController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
         }
     }
+
+    @DeleteMapping("/delete")
+    public ResponseEntity<Map<String, String>> deleteProfile(){
+        profileService.deleteCurrentProfile();
+        return ResponseEntity.ok(Map.of("message","Profile and all associated data deleted successfully."));
+    }
 }

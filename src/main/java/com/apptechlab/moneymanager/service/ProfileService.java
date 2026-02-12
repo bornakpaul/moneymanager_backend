@@ -4,6 +4,9 @@ import com.apptechlab.moneymanager.dto.AuthDto;
 import com.apptechlab.moneymanager.dto.ProfileDto;
 import com.apptechlab.moneymanager.entity.ProfileEntity;
 import com.apptechlab.moneymanager.event.ProfileActivatedEvent;
+import com.apptechlab.moneymanager.repository.CategoryRepository;
+import com.apptechlab.moneymanager.repository.ExpenseRepository;
+import com.apptechlab.moneymanager.repository.IncomeRepository;
 import com.apptechlab.moneymanager.repository.ProfileRepository;
 import com.apptechlab.moneymanager.util.JwtUtil;
 import jakarta.transaction.Transactional;
@@ -30,6 +33,9 @@ public class ProfileService {
     private String activationUrl;
 
     private final ProfileRepository profileRepository;
+    private final CategoryRepository categoryRepository;
+    private final ExpenseRepository expenseRepository;
+    private final IncomeRepository incomeRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final EmailService emailService;
     private final PasswordEncoder passwordEncoder;
@@ -107,6 +113,20 @@ public class ProfileService {
         currentUser.setPassword(passwordEncoder.encode(password));
         ProfileEntity updatedProfile = profileRepository.save(currentUser);
         return toDto(updatedProfile);
+    }
+
+    @Transactional
+    public void deleteCurrentProfile() {
+        ProfileEntity currentUser = this.getCurrentProfile();
+        Long profileId = currentUser.getId();
+
+        expenseRepository.deleteByProfileId(profileId);
+        incomeRepository.deleteByProfileId(profileId);
+        categoryRepository.deleteByProfileId(profileId);
+
+        profileRepository.delete(currentUser);
+
+        SecurityContextHolder.clearContext();
     }
 
     public ProfileDto getPublicProfile(String email){
