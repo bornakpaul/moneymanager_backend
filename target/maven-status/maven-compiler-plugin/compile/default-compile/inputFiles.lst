@@ -12,6 +12,7 @@
 /Users/bornakpaul/JavaProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/ExpenseDto.java
 /Users/bornakpaul/JavaProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/FilterDto.java
 /Users/bornakpaul/JavaProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/IncomeDto.java
+/Users/bornakpaul/JavaProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/MonthlyAnalyticsDto.java
 /Users/bornakpaul/JavaProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/ProfileDto.java
 /Users/bornakpaul/JavaProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/RecentTransactionDto.java
 /Users/bornakpaul/JavaProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/UpdatePasswordDto.java
