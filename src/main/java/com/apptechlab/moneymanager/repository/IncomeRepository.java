@@ -27,4 +27,8 @@ public interface IncomeRepository extends JpaRepository<IncomeEntity, Long> {
     List<IncomeEntity> findByProfileIdAndDateBetween(Long profileId, LocalDate startDate, LocalDate endDate);
 
     void deleteByProfileId(Long profileId);
+
+    @Query("SELECT MONTH(i.date) as month, SUM(i.amount) as total " +"FROM IncomeEntity i " +"WHERE i.profile.id = :profileId " +
+            "AND i.date BETWEEN :startDate AND :endDate " +"GROUP BY MONTH(i.date)")
+    List<Object[]> aggregateDataByMonth(Long profileId, LocalDate startDate, LocalDate endDate);
 }

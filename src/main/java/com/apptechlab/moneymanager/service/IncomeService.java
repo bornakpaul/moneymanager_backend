@@ -14,6 +14,8 @@ import org.springframework.stereotype.Service;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -53,6 +55,16 @@ public class IncomeService {
             throw new AuthorizationDeniedException("You are not authorised to delete this income. You can only delete the incomes added by you");
         }
         incomeRepository.delete(entity);
+    }
+
+    public Map<Integer, BigDecimal> getIncomeAnalyticsData(LocalDate startDate, LocalDate endDate) {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<Object[]> results = incomeRepository.aggregateDataByMonth(profile.getId(), startDate, endDate);
+
+        return results.stream().collect(Collectors.toMap(
+                row -> (Integer) row[0],
+                row -> (BigDecimal) row[1]
+        ));
     }
 
     public List<IncomeDto> getLatest5IncomesForCurrentUser(){

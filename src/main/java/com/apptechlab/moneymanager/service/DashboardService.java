@@ -2,14 +2,17 @@ package com.apptechlab.moneymanager.service;
 
 import com.apptechlab.moneymanager.dto.ExpenseDto;
 import com.apptechlab.moneymanager.dto.IncomeDto;
+import com.apptechlab.moneymanager.dto.MonthlyAnalyticsDto;
 import com.apptechlab.moneymanager.dto.RecentTransactionDto;
 import com.apptechlab.moneymanager.entity.ProfileEntity;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
-import java.util.LinkedHashMap;
-import java.util.List;
-import java.util.Map;
+import java.math.BigDecimal;
+import java.time.LocalDate;
+import java.time.Month;
+import java.time.format.TextStyle;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import static java.util.stream.Stream.concat;
@@ -66,6 +69,33 @@ public class DashboardService {
         returnValue.put("recentTransactions",recentTransaction);
         returnValue.put("expenseForTheMonth", expenseService.getCurrentMonthExpensesForCurrentUser());
         returnValue.put("incomeForTheMonth",  incomeService.getCurrentMonthIncomeForCurrentUser());
+        returnValue.put("dashboardAnalytics", getDashboardAnalytics());
         return returnValue;
+    }
+
+    public List<MonthlyAnalyticsDto> getDashboardAnalytics() {
+        LocalDate now = LocalDate.now();
+        int currentYear = now.getYear();
+
+        // Logic: Jan-Jun (1-6) or Jul-Dec (7-12)
+        int startMonth = (now.getMonthValue() <= 6) ? 1 : 7;
+        int endMonth = (now.getMonthValue() <= 6) ? 6 : 12;
+
+        LocalDate startDate = LocalDate.of(currentYear, startMonth, 1);
+        LocalDate endDate = LocalDate.of(currentYear, endMonth, startDate.withMonth(endMonth).lengthOfMonth());
+
+        // Call individual services
+        Map<Integer, BigDecimal> expenses = expenseService.getExpenseAnalyticsData(startDate, endDate);
+        Map<Integer, BigDecimal> incomes = incomeService.getIncomeAnalyticsData(startDate, endDate);
+
+        List<MonthlyAnalyticsDto> finalData = new ArrayList<>();
+        for (int m = startMonth; m <= endMonth; m++) {
+            finalData.add(MonthlyAnalyticsDto.builder()
+                    .month(Month.of(m).getDisplayName(TextStyle.SHORT, Locale.ENGLISH))
+                    .income(incomes.getOrDefault(m, BigDecimal.ZERO))
+                    .expense(expenses.getOrDefault(m, BigDecimal.ZERO))
+                    .build());
+        }
+        return finalData;
     }
 }

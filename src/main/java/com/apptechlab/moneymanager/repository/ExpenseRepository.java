@@ -27,4 +27,8 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long> {
     List<ExpenseEntity> findByProfileIdAndDate(Long profileId, LocalDate date);
 
     void deleteByProfileId(Long profileId);
+
+    @Query("SELECT MONTH(e.date) as month, SUM(e.amount) as total " +"FROM ExpenseEntity e " +"WHERE e.profile.id = :profileId " +
+            "AND e.date BETWEEN :startDate AND :endDate " +"GROUP BY MONTH(e.date)")
+    List<Object[]> aggregateDataByMonth(Long profileId, LocalDate startDate, LocalDate endDate);
 }

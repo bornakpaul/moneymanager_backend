@@ -15,7 +15,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service
 @RequiredArgsConstructor
@@ -54,6 +56,17 @@ public class ExpenseService {
             throw new AuthorizationDeniedException("You are not authorised to delete this expense. You can only delete the expenses added by you");
         }
         expenseRepository.delete(entity);
+    }
+
+    public Map<Integer, BigDecimal> getExpenseAnalyticsData(LocalDate startDate, LocalDate endDate) {
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<Object[]> results = expenseRepository.aggregateDataByMonth(profile.getId(), startDate, endDate);
+
+        return results.stream().collect(Collectors.toMap(
+                row -> (Integer) row[0],
+                row -> (BigDecimal) row[1],
+                (existing, replacement) -> existing // Handle duplicates if any
+        ));
     }
 
     public List<ExpenseDto> getLatest5ExpensesForCurrentUser(){
