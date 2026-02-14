@@ -71,7 +71,7 @@ public class ExpenseService {
 
     public List<ExpenseDto> getLatest5ExpensesForCurrentUser(){
         ProfileEntity profile = profileService.getCurrentProfile();
-        List<ExpenseEntity> entities = expenseRepository.findTop5ByProfileIdOrderByDateDesc(profile.getId());
+        List<ExpenseEntity> entities = expenseRepository.findTop5ByProfileIdOrderByDateDescIdDesc(profile.getId());
         return entities.stream().map(this::toDto).toList();
     }
 

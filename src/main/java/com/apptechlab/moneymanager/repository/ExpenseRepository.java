@@ -16,6 +16,8 @@ public interface ExpenseRepository extends JpaRepository<ExpenseEntity, Long> {
 
     List<ExpenseEntity> findTop5ByProfileIdOrderByDateDesc(Long profileId);
 
+    List<ExpenseEntity> findTop5ByProfileIdOrderByDateDescIdDesc(Long profileId);
+
     @Query("SELECT SUM(e.amount) FROM ExpenseEntity e WHERE e.profile.id = :profileId")
     BigDecimal findTotalExpenseByProfileId(@Param("profileId") Long profileId);
 

@@ -19,6 +19,7 @@ public class RecentTransactionDto {
     private Long profileId;
     private String icon;
     private String name;
+    private String categoryName;
     private BigDecimal amount;
     private LocalDate date;
     private LocalDateTime createdAt;

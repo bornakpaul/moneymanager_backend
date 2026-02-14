@@ -69,7 +69,7 @@ public class IncomeService {
 
     public List<IncomeDto> getLatest5IncomesForCurrentUser(){
         ProfileEntity profile = profileService.getCurrentProfile();
-        List<IncomeEntity> entities = incomeRepository.findTop5ByProfileIdOrderByDateDesc(profile.getId());
+        List<IncomeEntity> entities = incomeRepository.findTop5ByProfileIdOrderByDateDescIdDesc(profile.getId());
         return entities.stream().map(this::toDto).toList();
     }
 
