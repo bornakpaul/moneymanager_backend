@@ -62,11 +62,15 @@ public class ProfileService {
     public boolean activateProfile(String activationToken){
         return  profileRepository.findByActivationToken(activationToken).map(profile ->
                 {
+                    if(Boolean.TRUE.equals(profile.getIsActive())){
+                        return true;
+                    }
                     profile.setIsActive(true);
                     profileRepository.save(profile);
 
-                    eventPublisher.publishEvent(new ProfileActivatedEvent(this, profile));
-                    defaultCategoryListener.handleProfileActivation(new ProfileActivatedEvent(this, profile));
+                    ProfileActivatedEvent event = new ProfileActivatedEvent(this, profile);
+                    eventPublisher.publishEvent(event);
+                    defaultCategoryListener.handleProfileActivation(event);
                     return true;
                 }).orElse(false);
     }
