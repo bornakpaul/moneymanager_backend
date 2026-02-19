@@ -17,13 +17,16 @@
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/MonthlyAnalyticsDto.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/ProfileDto.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/RecentTransactionDto.java
+/Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/RefreshTokenDto.java
+/Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/RefreshTokenRequestDto.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/ResetPasswordDto.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/dto/UpdatePasswordDto.java
-/Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/entity/AppConfig.java
+/Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/entity/AppConfigEntity.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/entity/CategoryEntity.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/entity/ExpenseEntity.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/entity/IncomeEntity.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/entity/ProfileEntity.java
+/Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/entity/RefreshTokenEntity.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/event/DefaultCategoryListener.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/event/ProfileActivatedEvent.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/repository/AppConfigRepository.java
@@ -31,6 +34,7 @@
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/repository/ExpenseRepository.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/repository/IncomeRepository.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/repository/ProfileRepository.java
+/Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/repository/RefreshTokenRepository.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/security/JwtRequestFilter.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/service/AppConfigService.java
 /Users/bornakpaul/BackendProjects/moneymanager_backend/src/main/java/com/apptechlab/moneymanager/service/AppUserDetailsService.java

@@ -1,9 +1,6 @@
 package com.apptechlab.moneymanager.controller;
 
-import com.apptechlab.moneymanager.dto.AuthDto;
-import com.apptechlab.moneymanager.dto.ProfileDto;
-import com.apptechlab.moneymanager.dto.ResetPasswordDto;
-import com.apptechlab.moneymanager.dto.UpdatePasswordDto;
+import com.apptechlab.moneymanager.dto.*;
 import com.apptechlab.moneymanager.service.ProfileService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Generated;
@@ -77,6 +74,11 @@ public class ProfileController {
     public ResponseEntity<ProfileDto> resetPassword(@RequestParam ResetPasswordDto resetPasswordDto){
         ProfileDto updatedProfile = profileService.resetPassword(resetPasswordDto);
         return ResponseEntity.ok(updatedProfile);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshTokenDto> refreshToken(@RequestBody RefreshTokenRequestDto request) {
+        return ResponseEntity.ok(profileService.refreshAccessToken(request.getRefreshToken()));
     }
 
     @DeleteMapping("/delete")

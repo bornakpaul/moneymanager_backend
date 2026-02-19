@@ -2,13 +2,12 @@ package com.apptechlab.moneymanager.service;
 
 import com.apptechlab.moneymanager.dto.AuthDto;
 import com.apptechlab.moneymanager.dto.ProfileDto;
+import com.apptechlab.moneymanager.dto.RefreshTokenDto;
 import com.apptechlab.moneymanager.dto.ResetPasswordDto;
 import com.apptechlab.moneymanager.entity.ProfileEntity;
+import com.apptechlab.moneymanager.entity.RefreshTokenEntity;
 import com.apptechlab.moneymanager.event.ProfileActivatedEvent;
-import com.apptechlab.moneymanager.repository.CategoryRepository;
-import com.apptechlab.moneymanager.repository.ExpenseRepository;
-import com.apptechlab.moneymanager.repository.IncomeRepository;
-import com.apptechlab.moneymanager.repository.ProfileRepository;
+import com.apptechlab.moneymanager.repository.*;
 import com.apptechlab.moneymanager.util.JwtUtil;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -38,6 +37,7 @@ public class ProfileService {
     private final ProfileRepository profileRepository;
     private final CategoryRepository categoryRepository;
     private final ExpenseRepository expenseRepository;
+    private final RefreshTokenRepository refreshTokenRepository;
     private final IncomeRepository incomeRepository;
     private final ApplicationEventPublisher eventPublisher;
     private final EmailService emailService;
@@ -147,6 +147,45 @@ public class ProfileService {
                 }).orElseThrow(() -> new RuntimeException("Reset Password Failed!!"));
     }
 
+    public RefreshTokenDto refreshAccessToken(String requestToken){
+        return refreshTokenRepository.findByToken(requestToken)
+                .map(this::verifyExpiration)
+                .map(tokenEntity -> {
+                    ProfileEntity profile = tokenEntity.getProfile();
+
+                    String newAccessToken = jwtUtil.generateToken(profile.getEmail());
+
+                    refreshTokenRepository.delete(tokenEntity);
+                    String newRefreshToken = createRefreshToken(profile).getToken();
+
+                    RefreshTokenDto refreshTokenDto = new RefreshTokenDto();
+
+                    refreshTokenDto.setAccessToken(newAccessToken);
+                    refreshTokenDto.setRefreshToken(newRefreshToken);
+
+                    return refreshTokenDto;
+                }).orElseThrow(() -> new RuntimeException("Refresh token is not in database!"));
+    }
+
+    public RefreshTokenEntity createRefreshToken(ProfileEntity profile){
+        refreshTokenRepository.deleteByProfile(profile);
+
+        RefreshTokenEntity refreshToken = RefreshTokenEntity.builder()
+                .profile(profile)
+                .token(UUID.randomUUID().toString())
+                .expiryDate(Instant.now().plusMillis(604800000))
+                .build();
+        return refreshTokenRepository.save(refreshToken);
+    }
+
+    public RefreshTokenEntity verifyExpiration(RefreshTokenEntity token){
+        if(token.getExpiryDate().isBefore(Instant.now())){
+            refreshTokenRepository.delete(token);
+            throw new RuntimeException("Refresh token expired. Please log in again.");
+        }
+        return token;
+    }
+
     @Transactional
     public void deleteCurrentProfile() {
         ProfileEntity currentUser = this.getCurrentProfile();
@@ -174,9 +213,13 @@ public class ProfileService {
     public Map<String, Object> authenticateAndGenerateToken(AuthDto authDto){
         try {
             authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(authDto.getEmail(), authDto.getPassword()));
+
+            ProfileEntity profile = profileRepository.findByEmail(authDto.getEmail()).get();
             String token = jwtUtil.generateToken(authDto.getEmail());
+            RefreshTokenEntity refreshToken = createRefreshToken(profile);
             return Map.of(
                     "token",token,
+                    "refreshToken",refreshToken,
                     "user",getPublicProfile(authDto.getEmail()
                     ));
         }catch (Exception e){
