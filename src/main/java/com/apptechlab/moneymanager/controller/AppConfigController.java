@@ -16,7 +16,7 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin(origins = "*")
 @Tag(name = "App config Controller",description = "API's fetch app version for force update")
 public class AppConfigController {
-    private AppConfigService appConfigService;
+    private final AppConfigService appConfigService;
 
     @GetMapping("/version")
     public ResponseEntity<AppConfigDto> getAppVersionConfig(){
