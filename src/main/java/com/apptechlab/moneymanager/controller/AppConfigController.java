@@ -14,7 +14,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RequiredArgsConstructor
 @RequestMapping("/app-config")
 @CrossOrigin(origins = "*")
-@Tag(name = "App config Controller",description = "API's fetch app version for forceupdate")
+@Tag(name = "App config Controller",description = "API's fetch app version for force update")
 public class AppConfigController {
     private AppConfigService appConfigService;
 

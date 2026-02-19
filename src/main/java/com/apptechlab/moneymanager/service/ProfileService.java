@@ -2,6 +2,7 @@ package com.apptechlab.moneymanager.service;
 
 import com.apptechlab.moneymanager.dto.AuthDto;
 import com.apptechlab.moneymanager.dto.ProfileDto;
+import com.apptechlab.moneymanager.dto.ResetPasswordDto;
 import com.apptechlab.moneymanager.entity.ProfileEntity;
 import com.apptechlab.moneymanager.event.ProfileActivatedEvent;
 import com.apptechlab.moneymanager.repository.CategoryRepository;
@@ -22,6 +23,8 @@ import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
+import java.time.temporal.ChronoUnit;
 import java.util.Map;
 import java.util.Objects;
 import java.util.UUID;
@@ -113,6 +116,35 @@ public class ProfileService {
         currentUser.setPassword(passwordEncoder.encode(password));
         ProfileEntity updatedProfile = profileRepository.save(currentUser);
         return toDto(updatedProfile);
+    }
+
+    public void initiatePasswordReset(String email){
+        ProfileEntity profile = profileRepository.findByEmail(email)
+                .orElseThrow(() -> new UsernameNotFoundException("Email not found"));
+
+        String token = UUID.randomUUID().toString();
+        profile.setResetPasswordToken(token);
+        profile.setResetPasswordExpiresAt(Instant.now().plus(15, ChronoUnit.MINUTES));
+
+        profileRepository.save(profile);
+
+        String subject = "Reset your Money Manager password";
+        String body = "Your password reset token is: "+ token
+                + "\nIt will expire in 15 minutes.";
+        emailService.sendEmail(email,subject,body);
+    }
+
+    @Transactional
+    public ProfileDto resetPassword(ResetPasswordDto resetPasswordDto){
+        return profileRepository.findByResetPasswordToken(resetPasswordDto.getToken())
+                .filter(profileEntity -> profileEntity.getResetPasswordExpiresAt().isAfter(Instant.now()))
+                .map(profileEntity -> {
+                    profileEntity.setPassword(passwordEncoder.encode(resetPasswordDto.getPassword()));
+                    profileEntity.setResetPasswordToken(null);
+                    profileEntity.setResetPasswordExpiresAt(null);
+                    profileRepository.save(profileEntity);
+                    return toDto(profileEntity);
+                }).orElseThrow(() -> new RuntimeException("Reset Password Failed!!"));
     }
 
     @Transactional
