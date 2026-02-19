@@ -8,7 +8,6 @@ import org.springframework.context.event.EventListener;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
-import java.util.stream.Collectors;
 
 @Component
 public class DefaultCategoryListener {
@@ -28,10 +27,13 @@ public class DefaultCategoryListener {
 
     @EventListener
     @Transactional
-    public void handleProfileActivation(ProfileActivatedEvent event){
+    public void handleProfileActivation(ProfileActivatedEvent event) {
         ProfileEntity profile = event.getProfile();
+        Long profileId = profile.getId();
 
+        // Process Expense Categories
         List<CategoryEntity> expenseCategories = DEFAULT_EXPENSE_CATEGORIES.stream()
+                .filter(name -> !categoryRepository.existsByNameAndProfileId(name, profileId))
                 .map(name -> {
                     CategoryEntity category = new CategoryEntity();
                     category.setProfile(profile);
@@ -41,10 +43,14 @@ public class DefaultCategoryListener {
                 })
                 .toList();
 
-        categoryRepository.saveAll(expenseCategories);
-        System.out.println("Default expense categories created for user: "+profile.getEmail());
+        if (!expenseCategories.isEmpty()) {
+            categoryRepository.saveAll(expenseCategories);
+            System.out.println("Default expense categories created for user: " + profile.getEmail());
+        }
 
+        // Process Income Categories
         List<CategoryEntity> incomeCategories = DEFAULT_INCOME_CATEGORIES.stream()
+                .filter(name -> !categoryRepository.existsByNameAndProfileId(name, profileId))
                 .map(name -> {
                     CategoryEntity category = new CategoryEntity();
                     category.setProfile(profile);
@@ -54,7 +60,9 @@ public class DefaultCategoryListener {
                 })
                 .toList();
 
-        categoryRepository.saveAll(incomeCategories);
-        System.out.println("Default income categories created for user: "+profile.getEmail());
+        if (!incomeCategories.isEmpty()) {
+            categoryRepository.saveAll(incomeCategories);
+            System.out.println("Default income categories created for user: " + profile.getEmail());
+        }
     }
 }

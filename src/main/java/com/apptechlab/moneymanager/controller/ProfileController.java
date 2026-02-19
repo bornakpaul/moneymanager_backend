@@ -1,8 +1,6 @@
 package com.apptechlab.moneymanager.controller;
 
-import com.apptechlab.moneymanager.dto.AuthDto;
-import com.apptechlab.moneymanager.dto.ProfileDto;
-import com.apptechlab.moneymanager.dto.UpdatePasswordDto;
+import com.apptechlab.moneymanager.dto.*;
 import com.apptechlab.moneymanager.service.ProfileService;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.Generated;
@@ -62,6 +60,25 @@ public class ProfileController {
         }catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(Map.of("message", e.getMessage()));
         }
+    }
+
+    @PostMapping("/forgot-password")
+    public ResponseEntity<Map<String,String>> forgotPassword(@RequestParam String email){
+        profileService.initiatePasswordReset(email);
+        return ResponseEntity.ok(Map.of(
+                "message","If an account exists with this email, a reset code has been sent."
+        ));
+    }
+
+    @PostMapping("/reset-password")
+    public ResponseEntity<ProfileDto> resetPassword(@RequestParam ResetPasswordDto resetPasswordDto){
+        ProfileDto updatedProfile = profileService.resetPassword(resetPasswordDto);
+        return ResponseEntity.ok(updatedProfile);
+    }
+
+    @PostMapping("/refresh")
+    public ResponseEntity<RefreshTokenDto> refreshToken(@RequestBody RefreshTokenRequestDto request) {
+        return ResponseEntity.ok(profileService.refreshAccessToken(request.getRefreshToken()));
     }
 
     @DeleteMapping("/delete")

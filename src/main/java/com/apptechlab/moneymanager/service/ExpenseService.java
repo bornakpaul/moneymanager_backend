@@ -92,6 +92,22 @@ public class ExpenseService {
         return list.stream().map(this::toDto).toList();
     }
 
+    public Map<String, BigDecimal> getAggregatedData(LocalDate start,LocalDate end, String rangeType){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<Object[]> results;
+
+        if("12months".equalsIgnoreCase(rangeType)){
+            results = expenseRepository.aggregateDataByMonthYear(profile.getId(), start,end);
+        }else{
+            results = expenseRepository.aggregateDataByDay(profile.getId(), start,end);
+        }
+
+        return results.stream().collect(Collectors.toMap(
+                row -> row[0].toString() + (row.length > 2 ? "-" + row[1].toString() : ""),
+                row -> (BigDecimal) (row.length > 2 ? row[2] : row[1])
+        ));
+    }
+
     //helper methods
     private ExpenseEntity toEntity(ExpenseDto dto, ProfileEntity profile, CategoryEntity category){
         return ExpenseEntity.builder()
