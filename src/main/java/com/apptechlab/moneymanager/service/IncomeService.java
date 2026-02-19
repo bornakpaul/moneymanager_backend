@@ -7,6 +7,7 @@ import com.apptechlab.moneymanager.entity.ProfileEntity;
 import com.apptechlab.moneymanager.repository.CategoryRepository;
 import com.apptechlab.moneymanager.repository.IncomeRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Sort;
 import org.springframework.security.authorization.AuthorizationDeniedException;
 import org.springframework.stereotype.Service;
@@ -83,6 +84,22 @@ public class IncomeService {
         ProfileEntity profile = profileService.getCurrentProfile();
         List<IncomeEntity> list = incomeRepository.findByProfileIdAndDateBetweenAndNameContainingIgnoreCase(profile.getId(),startDate,endDate,keyword,sort);
         return list.stream().map(this::toDto).toList();
+    }
+
+    public Map<String, BigDecimal> getAggregatedData(LocalDate start,LocalDate end, String rangeType){
+        ProfileEntity profile = profileService.getCurrentProfile();
+        List<Object[]> results;
+
+        if("12months".equalsIgnoreCase(rangeType)){
+            results = incomeRepository.aggregateDataByMonthYear(profile.getId(), start,end);
+        }else{
+            results = incomeRepository.aggregateDataByDay(profile.getId(), start,end);
+        }
+
+        return results.stream().collect(Collectors.toMap(
+                row -> row[0].toString() + (row.length > 2 ? "-" + row[1].toString() : ""),
+                row -> (BigDecimal) (row.length > 2 ? row[2] : row[1])
+        ));
     }
 
     //helper methods
