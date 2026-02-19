@@ -11,26 +11,25 @@ import java.util.List;
 @Service
 @RequiredArgsConstructor
 public class AppConfigService {
-    private AppConfigRepository appConfigRepository;
+    private final AppConfigRepository appConfigRepository;
 
     public AppConfigDto getVersions(){
-        List<AppConfigEntity> configs = appConfigRepository.findAll();
+        AppConfigEntity androidConfig = appConfigRepository.findByPlatform("android");
+        AppConfigEntity iosConfig = appConfigRepository.findByPlatform("ios");
 
         AppConfigDto response = new AppConfigDto();
-
-        for(AppConfigEntity config: configs){
-            AppConfigDto.PlatformDetailDto details = AppConfigDto.PlatformDetailDto
-                    .builder()
-                    .minVersion(config.getMinVersion())
-                    .storeUrl(config.getStoreUrl())
-                    .build();
-
-            if("android".equalsIgnoreCase(config.getPlatform())){
-                response.setAndroid(details);
-            }else if("ios".equalsIgnoreCase(config.getPlatform())){
-                response.setIos(details);
-            }
-        }
+        AppConfigDto.PlatformDetailDto androidDetails = AppConfigDto.PlatformDetailDto
+                .builder()
+                .minVersion(androidConfig.getMinVersion())
+                .storeUrl(androidConfig.getStoreUrl())
+                .build();
+        AppConfigDto.PlatformDetailDto iosDetails = AppConfigDto.PlatformDetailDto
+                .builder()
+                .minVersion(iosConfig.getMinVersion())
+                .storeUrl(iosConfig.getStoreUrl())
+                .build();
+        response.setAndroid(androidDetails);
+        response.setIos(iosDetails);
         return response;
     }
 }
