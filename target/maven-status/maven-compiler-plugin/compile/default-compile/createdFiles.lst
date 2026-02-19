@@ -10,8 +10,10 @@ com/apptechlab/moneymanager/controller/IncomeController.class
 com/apptechlab/moneymanager/dto/AppConfigDto.class
 com/apptechlab/moneymanager/entity/ExpenseEntity$ExpenseEntityBuilder.class
 com/apptechlab/moneymanager/entity/IncomeEntity$IncomeEntityBuilder.class
+com/apptechlab/moneymanager/dto/AnalyticsOverviewDto$ChartDataPoint.class
 com/apptechlab/moneymanager/config/SecurityConfig.class
 com/apptechlab/moneymanager/service/AppUserDetailsService.class
+com/apptechlab/moneymanager/dto/AnalyticsOverviewRequestDto.class
 com/apptechlab/moneymanager/dto/ProfileDto.class
 com/apptechlab/moneymanager/entity/AppConfigEntity.class
 com/apptechlab/moneymanager/dto/IncomeDto$IncomeDtoBuilder.class
@@ -31,6 +33,7 @@ com/apptechlab/moneymanager/dto/CategoryDto$CategoryDtoBuilder.class
 com/apptechlab/moneymanager/service/ExpenseService.class
 com/apptechlab/moneymanager/dto/AppConfigDto$AppConfigDtoBuilder.class
 com/apptechlab/moneymanager/entity/CategoryEntity.class
+com/apptechlab/moneymanager/dto/AnalyticsOverviewDto$BreakdownDto.class
 com/apptechlab/moneymanager/entity/ProfileEntity$ProfileEntityBuilder.class
 com/apptechlab/moneymanager/dto/RefreshTokenDto$RefreshTokenDtoBuilder.class
 com/apptechlab/moneymanager/entity/RefreshTokenEntity.class
@@ -44,10 +47,12 @@ com/apptechlab/moneymanager/dto/ExpenseDto.class
 com/apptechlab/moneymanager/entity/IncomeEntity.class
 com/apptechlab/moneymanager/dto/IncomeDto.class
 com/apptechlab/moneymanager/dto/RefreshTokenDto.class
+com/apptechlab/moneymanager/service/AnalyticsService.class
 com/apptechlab/moneymanager/service/IncomeService.class
 com/apptechlab/moneymanager/entity/RefreshTokenEntity$RefreshTokenEntityBuilder.class
 com/apptechlab/moneymanager/entity/AppConfigEntity$AppConfigEntityBuilder.class
 com/apptechlab/moneymanager/dto/ResetPasswordDto$ResetPasswordDtoBuilder.class
+com/apptechlab/moneymanager/dto/AnalyticsOverviewDto.class
 com/apptechlab/moneymanager/dto/FilterDto.class
 com/apptechlab/moneymanager/controller/HomeController.class
 com/apptechlab/moneymanager/dto/ResetPasswordDto.class
@@ -57,6 +62,8 @@ com/apptechlab/moneymanager/dto/RecentTransactionDto.class
 com/apptechlab/moneymanager/dto/AuthDto$AuthDtoBuilder.class
 com/apptechlab/moneymanager/repository/ExpenseRepository.class
 com/apptechlab/moneymanager/controller/ExpenseController.class
+com/apptechlab/moneymanager/dto/AnalyticsOverviewDto$AnalyticsOverviewDtoBuilder.class
 com/apptechlab/moneymanager/repository/RefreshTokenRepository.class
+com/apptechlab/moneymanager/dto/AnalyticsOverviewRequestDto$AnalyticsOverviewRequestDtoBuilder.class
 com/apptechlab/moneymanager/controller/ProfileController.class
 com/apptechlab/moneymanager/entity/ProfileEntity.class
