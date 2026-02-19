@@ -27,7 +27,7 @@ public class DashboardController {
     }
 
     @PostMapping("/overview")
-    public ResponseEntity<AnalyticsOverviewDto> getDashboardOverviewData(@RequestParam AnalyticsOverviewRequestDto anayticsOverviewRequest){
+    public ResponseEntity<AnalyticsOverviewDto> getDashboardOverviewData(@RequestBody AnalyticsOverviewRequestDto anayticsOverviewRequest){
         AnalyticsOverviewDto analyticsOverviewData = analyticsService.getDetailedAnalytics(anayticsOverviewRequest);
         return ResponseEntity.ok(analyticsOverviewData);
     }

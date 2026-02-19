@@ -33,7 +33,7 @@ public class AnalyticsService {
         BigDecimal totalExpense = expenseRepository.findTotalExpenseByProfileIdAndDateBetween(profileId, startDate, endDate);
 
         // 2. Fetch Bar Chart Data
-        List<AnalyticsOverviewDto.ChartDataPoint> chartData = fetchChartData(profileId, startDate, endDate, analyticsOverviewRequestDto.getRange(), analyticsOverviewRequestDto.getCategoryType());
+        List<AnalyticsOverviewDto.ChartDataPoint> chartData = fetchChartData(startDate, endDate, analyticsOverviewRequestDto.getRange(), analyticsOverviewRequestDto.getCategoryType());
 
         // 3. Fetch Donut Chart Data (Breakdown)
         List<AnalyticsOverviewDto.BreakdownDto> breakdown = fetchBreakdownData(profileId, startDate, endDate, analyticsOverviewRequestDto.getCategoryType());
@@ -75,7 +75,7 @@ public class AnalyticsService {
     }
 
 
-    private List<AnalyticsOverviewDto.ChartDataPoint> fetchChartData(Long pid, LocalDate s, LocalDate e, String range, String type) {
+    private List<AnalyticsOverviewDto.ChartDataPoint> fetchChartData( LocalDate s, LocalDate e, String range, String type) {
         // 1. Fetch maps from both services
         Map<String, BigDecimal> incomeMap = new HashMap<>();
         Map<String, BigDecimal> expenseMap = new HashMap<>();
