@@ -16,6 +16,8 @@ public interface RefreshTokenRepository extends JpaRepository<RefreshTokenEntity
     @Transactional
     void deleteByProfile(ProfileEntity profile);
 
+    @Modifying
+    @Transactional
     void deleteByProfileId(Long profileId);
 
 }

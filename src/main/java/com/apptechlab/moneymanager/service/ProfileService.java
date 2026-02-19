@@ -6,6 +6,7 @@ import com.apptechlab.moneymanager.dto.RefreshTokenDto;
 import com.apptechlab.moneymanager.dto.ResetPasswordDto;
 import com.apptechlab.moneymanager.entity.ProfileEntity;
 import com.apptechlab.moneymanager.entity.RefreshTokenEntity;
+import com.apptechlab.moneymanager.event.DefaultCategoryListener;
 import com.apptechlab.moneymanager.event.ProfileActivatedEvent;
 import com.apptechlab.moneymanager.repository.*;
 import com.apptechlab.moneymanager.util.JwtUtil;
@@ -36,6 +37,7 @@ public class ProfileService {
 
     private final ProfileRepository profileRepository;
     private final CategoryRepository categoryRepository;
+    private final DefaultCategoryListener defaultCategoryListener;
     private final ExpenseRepository expenseRepository;
     private final RefreshTokenRepository refreshTokenRepository;
     private final IncomeRepository incomeRepository;
@@ -64,6 +66,7 @@ public class ProfileService {
                     profileRepository.save(profile);
 
                     eventPublisher.publishEvent(new ProfileActivatedEvent(this, profile));
+                    defaultCategoryListener.handleProfileActivation(new ProfileActivatedEvent(this, profile));
                     return true;
                 }).orElse(false);
     }
@@ -196,7 +199,7 @@ public class ProfileService {
         expenseRepository.deleteByProfileId(profileId);
         incomeRepository.deleteByProfileId(profileId);
         categoryRepository.deleteByProfileId(profileId);
-
+        refreshTokenRepository.deleteByProfileId(profileId);
         profileRepository.delete(currentUser);
 
         SecurityContextHolder.clearContext();
