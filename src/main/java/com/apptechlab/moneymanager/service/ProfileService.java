@@ -167,6 +167,7 @@ public class ProfileService {
                 }).orElseThrow(() -> new RuntimeException("Refresh token is not in database!"));
     }
 
+
     public RefreshTokenEntity createRefreshToken(ProfileEntity profile){
         refreshTokenRepository.deleteByProfile(profile);
 
@@ -223,7 +224,7 @@ public class ProfileService {
                     "user",getPublicProfile(authDto.getEmail()
                     ));
         }catch (Exception e){
-            throw new RuntimeException("Invalid email or password or "+e);
+            throw new RuntimeException("Invalid email or password" + "\n" + e);
         }
     }
 
