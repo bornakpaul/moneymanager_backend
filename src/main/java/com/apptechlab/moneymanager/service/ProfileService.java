@@ -223,7 +223,7 @@ public class ProfileService {
                     "user",getPublicProfile(authDto.getEmail()
                     ));
         }catch (Exception e){
-            throw new RuntimeException("Invalid email or password");
+            throw new RuntimeException("Invalid email or password or "+e);
         }
     }
 
