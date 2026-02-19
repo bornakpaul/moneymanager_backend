@@ -168,6 +168,7 @@ public class ProfileService {
     }
 
 
+    @Transactional
     public RefreshTokenEntity createRefreshToken(ProfileEntity profile){
         refreshTokenRepository.deleteByProfile(profile);
 
