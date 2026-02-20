@@ -63,7 +63,7 @@ public class ProfileController {
     }
 
     @PostMapping("/forgot-password")
-    public ResponseEntity<Map<String,String>> forgotPassword(@RequestParam String email){
+    public ResponseEntity<Map<String,String>> forgotPassword(@RequestBody String email){
         profileService.initiatePasswordReset(email);
         return ResponseEntity.ok(Map.of(
                 "message","If an account exists with this email, a reset code has been sent."
