@@ -32,7 +32,9 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity httpSecurity) throws Exception{
         httpSecurity.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
-                .authorizeHttpRequests(auth -> auth.requestMatchers("/status","/health","/register","/activate", "/login","/app-config/version").permitAll()
+                .authorizeHttpRequests(auth ->
+                        auth.requestMatchers("/status","/health","/register","/activate", "/login","/app-config/version","/forgot-password")
+                                .permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/v3/api-docs.yaml",
