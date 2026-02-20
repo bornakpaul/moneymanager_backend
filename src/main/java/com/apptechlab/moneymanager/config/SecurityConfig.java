@@ -33,8 +33,9 @@ public class SecurityConfig {
         httpSecurity.cors(Customizer.withDefaults())
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(auth ->
-                        auth.requestMatchers("/status","/health","/register","/activate", "/login","/app-config/version","/forgot-password")
-                                .permitAll()
+                        auth.requestMatchers("/status","/health","/register","/activate",
+                                        "/login","/app-config/version","/forgot-password","/reset-password","/refresh"
+                                ).permitAll()
                         .requestMatchers(
                                 "/v3/api-docs/**",
                                 "/v3/api-docs.yaml",
