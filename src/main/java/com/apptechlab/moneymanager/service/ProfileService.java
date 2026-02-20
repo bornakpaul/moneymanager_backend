@@ -225,7 +225,8 @@ public class ProfileService {
 
             ProfileEntity profile = profileRepository.findByEmail(authDto.getEmail()).orElseThrow(() -> new UsernameNotFoundException("Profile not found with email: "+ authDto.getEmail()));
             String token = jwtUtil.generateToken(authDto.getEmail());
-            RefreshTokenEntity refreshToken = createRefreshToken(profile);
+            RefreshTokenEntity refreshTokenEntity = createRefreshToken(profile);
+            String refreshToken = refreshTokenEntity.getToken();
             return Map.of(
                     "token",token,
                     "refreshToken",refreshToken,
