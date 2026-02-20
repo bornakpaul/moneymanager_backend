@@ -13,6 +13,7 @@ com/apptechlab/moneymanager/entity/IncomeEntity$IncomeEntityBuilder.class
 com/apptechlab/moneymanager/dto/AnalyticsOverviewDto$ChartDataPoint.class
 com/apptechlab/moneymanager/config/SecurityConfig.class
 com/apptechlab/moneymanager/service/AppUserDetailsService.class
+com/apptechlab/moneymanager/dto/ForgotPasswordDto.class
 com/apptechlab/moneymanager/dto/AnalyticsOverviewRequestDto.class
 com/apptechlab/moneymanager/dto/ProfileDto.class
 com/apptechlab/moneymanager/entity/AppConfigEntity.class
@@ -66,4 +67,5 @@ com/apptechlab/moneymanager/dto/AnalyticsOverviewDto$AnalyticsOverviewDtoBuilder
 com/apptechlab/moneymanager/repository/RefreshTokenRepository.class
 com/apptechlab/moneymanager/dto/AnalyticsOverviewRequestDto$AnalyticsOverviewRequestDtoBuilder.class
 com/apptechlab/moneymanager/controller/ProfileController.class
+com/apptechlab/moneymanager/dto/ForgotPasswordDto$ForgotPasswordDtoBuilder.class
 com/apptechlab/moneymanager/entity/ProfileEntity.class
