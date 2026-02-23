@@ -48,6 +48,9 @@ public class ProfileService {
     private final JwtUtil jwtUtil;
 
     public ProfileDto registerProfile(ProfileDto profileDto){
+        if(!isValidEmail(profileDto.getEmail())){
+            throw new IllegalArgumentException("Invalid email format. Please provide a real email address");
+        }
         ProfileEntity newProfile = toEntity(profileDto);
         newProfile.setActivationToken(UUID.randomUUID().toString());
         newProfile = profileRepository.save(newProfile);
@@ -57,6 +60,13 @@ public class ProfileService {
         String body = "Click on the following link to activate your account: " + activationLink;
         emailService.sendEmail(newProfile.getEmail(), subject,body);
         return toDto(newProfile);
+    }
+
+    // Helper method using Regex
+    private boolean isValidEmail(String email) {
+        if (email == null || email.isEmpty()) return false;
+        String emailRegex = "^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+\\.[A-Za-z]{2,6}$";
+        return email.matches(emailRegex);
     }
 
     public boolean activateProfile(String activationToken){
